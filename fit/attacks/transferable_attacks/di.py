@@ -74,7 +74,7 @@ class DI():
     def get_attack_name(self):
         return self.name
 
-    def __call__(self, model, images, data):
+    def __call__(self, model, images, labels):
         r"""
         Overridden.
         """

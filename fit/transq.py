@@ -1,5 +1,4 @@
 import numpy as np
-from regex import P
 
 class TransQ:
     def __init__(self, method="1") -> None:

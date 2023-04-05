@@ -41,7 +41,7 @@ class FiT:
                 model = model_instances[model_name].to(self.device)
                 advs = self._run_attack(x, model, attack, y=y)
                 directions[attack][model_name] = advs - x
-                directions[attack][model_name] /= torch.norm(directions[attack][model_name], dim=(1, 2, 3), keepdim=True)
+                directions[attack][model_name] /= torch.norm(directions[attack][model_name], dim=(1, 2), keepdim=True).norm(dim=3, keepdim=True)
 
         # Get Distances in each transferable direction
         distances = {}
@@ -83,6 +83,7 @@ class FiT:
         print("Running attack: ", attack)
         n_batch = int(np.ceil(x.shape[0] / self.batch_size))
 
+        advs = []
         for batch_i in range(n_batch):
             batch_x = x[batch_i * self.batch_size: (batch_i + 1) * self.batch_size]
             batch_x = batch_x.to(self.device)
@@ -90,7 +91,7 @@ class FiT:
                 batch_y = y[batch_i * self.batch_size: (batch_i + 1) * self.batch_size]
             else:
                 batch_y = model(batch_x).argmax(dim=1)
-
+            batch_y = batch_y.to(self.device)
             adv = self.attacks[attack](model, batch_x, batch_y)
             advs.append(adv.cpu())
 
@@ -162,7 +163,7 @@ class FiT:
             params = attack.split("-")[1:]
             params = {p.split("=")[0]: p.split("=")[1] for p in params}
 
-            from fit.attacks.di import DI
+            from fit.attacks.transferable_attacks.di import DI
             return DI(
                 epsilon=params.get("epsilon", 8), 
                 num_iteration=params.get("num_iteration", 20),
