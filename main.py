@@ -26,6 +26,8 @@ fit = FiT(
 
 
 # Load Images attack
+# Examples of images are in ./data/images. 
+# It's a subset of 5 images from the set used in the paper's evaluation.
 
 X = []
 images_folder = "./data/images"
@@ -35,7 +37,6 @@ for file in os.listdir(images_folder):
     img = read_image(os.path.join(images_folder, file))
     img = transform(img).float()
     X.append(img.unsqueeze(0) / 255)
-
 X = torch.cat(X, dim=0)
 
 # Predictions of all sources have been precomputed
