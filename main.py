@@ -42,14 +42,11 @@ for file in os.listdir(images_folder):
 X = torch.cat(X, dim=0)
 y = torch.tensor(y)
 
-print(X.shape)
-print(y.shape)
-
 # Predictions of all sources have been precomputed
 print("Load predictions precomputed")
 truths = np.load(os.path.join("data/predictions-precomputed/labels.npy"))
-predictions = {}
-for m_i, m in enumerate(sources):
+predictions = {"truths": truths}
+for m_i, m in enumerate(sources + [target]):
     p = np.load(os.path.join("./data/predictions-precomputed/", m + ".npy"))
     predictions[m] = p[:, 0]
 
